@@ -16,7 +16,7 @@ with open("input.txt") as file:
     print(total)
 
 # p2
-with open("test.txt") as file:
+with open("input.txt") as file:
     total = 0
     for line in file:
         line = line.strip()
@@ -24,14 +24,14 @@ with open("test.txt") as file:
         start = len(line) - 12
         left_bounds = 0
         acc = []
-        n = 0
         for x in range(start, len(line)):
-            n += 1
             max_battery = int(line[x])
             changed = False
-            for j in range(left_bounds, x):
+            # For each battery, check all batteries between previous one and itself
+            # to see if there are any with more power
+            for j in range(x - 1, left_bounds - 1, -1):
                 cmp = int(line[j])
-                if cmp > max_battery:
+                if cmp >= max_battery:
                     max_battery = cmp
                     # Set the left bounds for future checks
                     left_bounds = j + 1
@@ -41,7 +41,6 @@ with open("test.txt") as file:
 
             acc.append(str(max_battery))
 
-        print(acc)
         total += int("".join(acc))
 
     print(total)
