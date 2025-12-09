@@ -14,14 +14,17 @@ def euclidian_distance(p1, p2):
     )
 
 
+boxes = set()
 # Construct an array holding the distances between each point
 i = 0
 distances: list[tuple[int, tuple, tuple]] = []
 while i < len(coordinates) - 1:
     curr = coordinates[i]
+    boxes.add(curr)
     j = i + 1
     while j < len(coordinates):
         check = coordinates[j]
+        boxes.add(check)
         distance = euclidian_distance(curr, check)
         distances.append((distance, curr, check))
         j += 1
@@ -32,9 +35,6 @@ distances = sorted(distances, key=lambda x: x[0])
 circuits: list[set[tuple]] = []
 num_connected = 0
 for d in distances:
-    if num_connected >= 1000:
-        break
-    placed = False
     # Get the circuit for each box. We assume there will only ever be one
     possible_d1_circuits = [c for c in circuits if d[1] in c]
     possible_d2_circuits = [c for c in circuits if d[2] in c]
@@ -55,6 +55,12 @@ for d in distances:
         num_connected += 1
     else:
         num_connected += 1
+    boxes.discard(d[1])
+    boxes.discard(d[2])
+    if len(boxes) == 0:
+        print("no more to join!")
+        print(d)
+        break
 
 
 circuit_lengths = sorted([len(c) for c in circuits], reverse=True)
